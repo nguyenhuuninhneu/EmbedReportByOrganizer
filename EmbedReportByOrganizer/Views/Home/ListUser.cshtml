@@ -1,0 +1,59 @@
+﻿@using EmbedReportByOrganizer.Models
+
+@{
+    //ViewBag.Title = "List user";
+    var errorMessage = TempData["LoginErrorMessage"] == null ? "" : TempData["LoginErrorMessage"].ToString().Replace("'", "\"").Replace("\r\n", " ");
+    var listUser = ViewBag.ListUser as List<UserPowerAppModel>;
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Email</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (listUser != null && listUser.Count > 0)
+        {
+            var index = 0;
+            foreach (var item in listUser)
+            {
+                {
+                    index = index + 1;
+                }
+                <tr>
+                    <th scope="row">@index</th>
+                    <th scope="row">@item.email</th>
+                    <td><a class="dropdown-item" href="/Home/LoginView?email=@item.email">Login</a></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">No data</td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+@section Scripts {
+    <script type="text/javascript">
+
+        $(function () {
+            debugger;
+            //
+            var error = '@errorMessage';
+            if (error != null && error != '' && error != undefined) {
+                alert(error);
+            } 
+
+        });
+    </script>
+
+}
