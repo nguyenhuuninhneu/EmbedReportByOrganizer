@@ -31,7 +31,7 @@ namespace EmbedReportByOrganizer
 
                 if (!System.IO.File.Exists(filePath))
                 {
-                    var json = JsonConvert.SerializeObject(new List<SettingModel>());
+                    var json = JsonConvert.SerializeObject(new List<TenantModel>());
                     using (var stream = new StreamWriter(filePath))
                     {
                         stream.Write(json);

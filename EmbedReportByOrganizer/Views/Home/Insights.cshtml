@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Create Insight";
+}
+@model EmbedReportByOrganizer.Models.InsightsModel
+
+<hr />
+<a class="dropdown-item" href="/Home/InsightsManagement">Back to Insights</a>
+
+<h1>Insights Detail</h1>
+
+
+<div class="row">
+    <input type="hidden" id="fId" name="fId" value="@Model.id" />
+    <div class="mb-3">
+        <label for="fName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="fName" aria-describedby="fName" value="@Model.name">
+    </div>
+    <div class="mb-3">
+        <label for="fWorkspaceId" class="form-label">Workspace ID</label>
+        <input type="text" class="form-control" id="fWorkspaceId" aria-describedby="fWorkspaceId" value="@Model.workspaceId">
+    </div>
+    <div class="mb-3">
+        <label for="fReportID" class="form-label">Report ID</label>
+        <input type="text" class="form-control" id="fReportID" aria-describedby="fReportID" value="@Model.reportId">
+    </div>
+    <div class="button-container col-lg-1 col-md-12">
+        <button class="embed-button" id="fSaveInsightsCreate">Save</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $('#fSaveInsightsCreate').click(function () {
+                var insightModel = {
+                    'id': $('#fId').val(),
+                    'name': $('#fName').val(),
+                    'workspaceId': $('#fWorkspaceId').val(),
+                    'reportId': $('#fReportID').val(),
+                };
+                $.ajax({
+                    url: "/Home/SaveInsights",
+                    type: "POST",
+                    data: insightModel,
+                    success: function (data) {
+                        alert(data.message);
+                        window.location.href = 'https://localhost:44379/Home/InsightsManagement';
+                    }
+                });
+            });
+        });
+    </script>
+
+}

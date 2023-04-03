@@ -1,0 +1,60 @@
+﻿
+
+@{
+    //ViewBag.Title = "List user";
+    var errorMessage = TempData["LoginErrorMessage"] == null ? "" : TempData["LoginErrorMessage"].ToString().Replace("'", "\"").Replace("\r\n", " ");
+}
+@model List<EmbedReportByOrganizer.Models.InsightsModel>
+
+<a class="dropdown-item" href="/Home/Insights">Add new</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">WorkspaceID</th>
+            <th scope="col">ReportID</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            var index = 0;
+            foreach (var item in Model)
+            {
+                {
+                    index = index + 1;
+                }
+                <tr>
+                    <th scope="row">@index</th>
+                    <th scope="row">@item.name</th>
+                    <th scope="row">@item.workspaceId</th>
+                    <th scope="row">@item.reportId</th>
+                    <td><a class="dropdown-item" href="/Home/Insights?id=@item.id&workspaceId=@item.workspaceId&reportId=@item.reportId">Update</a> / <a class="dropdown-item" href="/Home/ViewReport?id=@item.id&workspaceId=@item.workspaceId&reportId=@item.reportId">View Report</a> / <a class="dropdown-item" href="/Home/DeleteInsights?id=@item.id">Delete</a></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">No data</td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+@section Scripts {
+    <script type="text/javascript">
+
+        $(function () {
+            //
+            var error = '@errorMessage';
+            if (error != null && error != '' && error != undefined) {
+                alert(error);
+            }
+
+        });
+    </script>
+
+}

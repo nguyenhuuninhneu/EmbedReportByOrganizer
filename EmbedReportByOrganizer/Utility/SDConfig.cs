@@ -11,69 +11,95 @@ namespace EmbedReportByOrganizer
 {
     public static class SDConfig
     {
-        public static void RefreshSettingCache()
+        public static void RefreshTenantCache()
         {
-            List<SettingModel> list = new List<SettingModel>();
-            list = GetSettingCache();
-            if (list == null || list.Count == 0)
+            TenantModel tenantModel = new TenantModel();
+            tenantModel = GetTenantCache();
+            if (tenantModel == null)
             {
-                list = new List<SettingModel>();
-                list.Add(CreateDefaultSetting());
+
+                tenantModel = CreateDefaultTenant();
             }
-            Common.WriteJson(list, "Setting");
+            Common.WriteJson(tenantModel, "Tenant");
         }
-        public static void SetSettingCache(List<SettingModel> list)
+        public static void SetTenantCache(TenantModel tenantModel)
         {
-            Common.WriteJson(list, "Setting");
+            Common.WriteJson(tenantModel, "Tenant");
         }
-        public static List<SettingModel> GetSettingCache()
+        public static TenantModel GetTenantCache()
         {
-            return Common.ReadJson<List<SettingModel>>("Setting");
+            return Common.ReadJson<TenantModel>("Tenant");
         }
-        public static SettingModel CreateDefaultSetting()
+        public static TenantModel CreateDefaultTenant()
         {
-            var obj = new SettingModel()
+            var obj = new TenantModel()
             {
-                appcode = Constants.AppCode,
                 tenantId = Constants.TenantId,
                 clientId = Constants.ClientID,
                 clientSecret = Constants.ClientSecret,
-                reportId = Constants.ReportID,
-                
+
             };
             return obj;
         }
-
-        public static void RefreshUserPowerAppCache()
+        public static void RefreshConfigurationCache()
         {
-            List<UserPowerAppModel> list = new List<UserPowerAppModel>();
-            list = GetUserPowerAppCache();
+            ConfigurationAccountModel configurationAccountModel = new ConfigurationAccountModel();
+            configurationAccountModel = GetConfigurationCache();
+            if (configurationAccountModel == null)
+            {
+
+                configurationAccountModel = CreateDefaultConfiguration();
+            }
+            Common.WriteJson(configurationAccountModel, "Configuration");
+        }
+        public static void SetConfigurationCache(ConfigurationAccountModel configurationAccountModel)
+        {
+            Common.WriteJson(configurationAccountModel, "Configuration");
+        }
+        public static ConfigurationAccountModel GetConfigurationCache()
+        {
+            return Common.ReadJson<ConfigurationAccountModel>("Configuration");
+        }
+        public static ConfigurationAccountModel CreateDefaultConfiguration()
+        {
+            var obj = new ConfigurationAccountModel()
+            {
+                userName = "nhn@staod.onmicrosoft.com",
+                password = "Khongbietgi@123",
+            };
+            return obj;
+        }
+        public static void RefreshInsightsCache()
+        {
+            List<InsightsModel> list = new List<InsightsModel>();
+            list = GetInsightsCache();
             if (list == null || list.Count == 0)
             {
-                list = new List<UserPowerAppModel>();
-                list.Add(CreateDefaultUserPowerApp(Constants.EmailDefault));
-                list.Add(CreateDefaultUserPowerApp("intune_user20@staod.onmicrosoft.com"));
+                list = new List<InsightsModel>();
+                list.Add(CreateDefaultInsights());
             }
-            Common.WriteJson(list, "UserPowerApp");
+            Common.WriteJson(list, "Insights");
         }
-        public static void SetUserPowerAppCache(List<UserPowerAppModel> list)
+        public static void SetInsightsCache(List<InsightsModel> list)
         {
-            Common.WriteJson(list, "UserPowerApp");
+            Common.WriteJson(list, "Insights");
         }
-        public static List<UserPowerAppModel> GetUserPowerAppCache()
+        public static List<InsightsModel> GetInsightsCache()
         {
-            return Common.ReadJson<List<UserPowerAppModel>>("UserPowerApp");
+            return Common.ReadJson<List<InsightsModel>>("Insights");
         }
-        public static UserPowerAppModel CreateDefaultUserPowerApp(string email)
-        {
-            var obj = new UserPowerAppModel()
-            {
-                email = email,
-                access_token = "",
-                refresh_token = "",
 
+        public static InsightsModel CreateDefaultInsights()
+        {
+            var obj = new InsightsModel()
+            {
+                id = Guid.NewGuid().ToString(),
+                name = "Insights for Sensor",
+                workspaceId = Constants.WorkspaceID,
+                reportId = Constants.ReportID,
             };
             return obj;
         }
+
     }
 }

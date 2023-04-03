@@ -19,7 +19,8 @@ namespace EmbedReportByOrganizer
         public static string TenantId = "1f32b049-29d1-44ba-877b-a634aed2109d";
         public static string ClientID = "60cbc618-ab8d-4389-94a8-c98f38484b38";
         public static string ClientSecret = "eot8Q~aupgVi4WJVBcKcCA6S5IygwSXxUYZnyb6~";
-        public static string ReportID = "8d7cc0f9-e43f-4f24-b315-cc9a39431538";
+        public static string ReportID = "a1c4aaab-faf2-4867-be99-479a24f95085";
+        public static string WorkspaceID = "dd6a635a-131b-4ab1-8bea-4f206f5f5ecb";
         public static string EmailDefault = "nhn@staod.onmicrosoft.com";
     }
 }

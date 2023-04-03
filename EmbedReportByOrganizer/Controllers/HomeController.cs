@@ -1,5 +1,6 @@
 ﻿using EmbedReportByOrganizer.Models;
 using EmbedReportByOrganizer.Service;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -18,52 +19,42 @@ namespace EmbedReportByOrganizer.Controllers
 {
     public class HomeController : Controller
     {
-        IGraphService graphService = new GraphService();
-        //Trang dang nhap: ListUser
-        public ActionResult ListUser()
+        private string m_errorMessage;
+        ConfigValidatorService configValidatorService = new ConfigValidatorService();
+        public HomeController()
         {
-            Session["Email"] = "";
-            ViewBag.Message = "List User page.";
-            SDConfig.RefreshSettingCache();
-            SDConfig.RefreshUserPowerAppCache();
-            ViewBag.ListUser = SDConfig.GetUserPowerAppCache();
-            return View();
+            SDConfig.RefreshTenantCache();
+            SDConfig.RefreshConfigurationCache();
+            SDConfig.RefreshInsightsCache();
+            var tenant = SDConfig.GetTenantCache();
+            var user = SDConfig.GetConfigurationCache();
+            var insights = SDConfig.GetInsightsCache().FirstOrDefault();
+            m_errorMessage = configValidatorService.GetWebConfigErrors(tenant, insights, user);
+          
         }
 
-        public ActionResult SettingEmbed()
+        public ActionResult Tenant()
         {
-            ViewBag.Message = "Setting Power BI parameter.";
-            var settingModel = SDConfig.GetSettingCache().FirstOrDefault(p => p.appcode == Constants.AppCode);
-            ViewBag.TenantId = settingModel.tenantId;
-            ViewBag.ClientId = settingModel.clientId;
-            ViewBag.ClientSecret = settingModel.clientSecret;
-            ViewBag.ReportId = settingModel.reportId;
-            return View();
+            ViewBag.Message = "Tenant Power BI parameter.";
+            var tenantModel = SDConfig.GetTenantCache();
+            return View(tenantModel);
         }
-
         [System.Web.Http.HttpPost]
-        public JsonResult SaveSetting(SettingModel settingModel)
+        public JsonResult SaveTenant(TenantModel tenantModel)
         {
             var status = true;
             var message = "Success";
             try
             {
-                var listSetting = SDConfig.GetSettingCache();
-                if (listSetting != null && listSetting.Count > 0)
+                var obj = SDConfig.GetTenantCache();
+                if (obj == null)
                 {
-                    foreach (var item in listSetting)
-                    {
-                        if (item.appcode == Constants.AppCode)
-                        {
-                            item.tenantId = settingModel.tenantId;
-                            item.clientId = settingModel.clientId;
-                            item.clientSecret = settingModel.clientSecret;
-                            item.reportId = settingModel.reportId;
-                        }
-                    }
-                    SDConfig.SetSettingCache(listSetting);
+                    obj = new TenantModel();
                 }
-                
+                obj.tenantId = tenantModel.tenantId;
+                obj.clientId = tenantModel.clientId;
+                obj.clientSecret = tenantModel.clientSecret;
+                SDConfig.SetTenantCache(obj);
             }
             catch (Exception ex)
             {
@@ -74,182 +65,172 @@ namespace EmbedReportByOrganizer.Controllers
 
 
         }
-        public async Task<ActionResult> Embed()
+        public ActionResult InsightsManagement()
         {
-            ViewBag.Message = "Embed page.";
-            var report = new GetReportInfoModel();
+            ViewBag.Message = "Insights.";
+            var list = SDConfig.GetInsightsCache();
+            return View(list);
+        }
+        public ActionResult Insights(string id)
+        {
+            ViewBag.Message = "Create Insights";
+            InsightsModel insightsModel = new InsightsModel();
+            if (!string.IsNullOrEmpty(id))
+            {
+                var listInsights = SDConfig.GetInsightsCache();
 
+                if (listInsights != null && listInsights.Count > 0)
+                {
+                    insightsModel = listInsights.FirstOrDefault(p => p.id == id);
+                    if (insightsModel == null)
+                        insightsModel = new InsightsModel();
+                }
+            }
+            return View(insightsModel);
+        }
+        [System.Web.Http.HttpPost]
+        public JsonResult SaveInsights(InsightsModel insightsModel)
+        {
+            var status = true;
+            var message = "Success";
             try
             {
-                string emailLogin = Session["Email"]?.ToString();
-                if (string.IsNullOrEmpty(emailLogin))
-                {
-                    return RedirectToAction("ListUser");
-                }
-                var userPowerApp = new UserPowerAppModel();
-                var settingModel = new SettingModel();
+                var listInsights = SDConfig.GetInsightsCache();
                 
-                //Lay thong tin user + setting tu DB ra
-
-                #region Get Data
-                var listPowerApp = SDConfig.GetUserPowerAppCache();
-                var listSetting = SDConfig.GetSettingCache();
-                
-                if (listPowerApp != null && listPowerApp.Count > 0)
-                    userPowerApp = listPowerApp.FirstOrDefault(p => p.email == emailLogin);
-
-                if (listSetting != null && listSetting.Count > 0)
-                    settingModel = listSetting.FirstOrDefault(p => p.appcode == Constants.AppCode);
-
-                string token = userPowerApp?.access_token;
-                report.Token = token;
-                #endregion
-
-
-                if (settingModel == null || (settingModel != null && (string.IsNullOrEmpty(settingModel.tenantId) || string.IsNullOrEmpty(settingModel.clientSecret) || string.IsNullOrEmpty(settingModel.reportId)|| string.IsNullOrEmpty(settingModel.reportId))))
+                if (insightsModel != null && !string.IsNullOrEmpty(insightsModel.id) && listInsights != null && listInsights.Count > 0)
                 {
-                    //Chua cau hinh tham so thi thong bao loi
-                    report.Message = "You havent't set up (tenantId, clientId,clientsecret,reportId) for embed";
-                    report.EmbedUrl = "";
-                    report.ReportId = settingModel.reportId;
-                    ViewBag.Report = report;
-                    return View();
-                }
-                if (string.IsNullOrEmpty(token))
-                {
-                    //Neu chua login => Login de lay token
-                    var url = graphService.LoadPopupLoginMicrosoft(settingModel.tenantId, settingModel.clientId);
-                    return Redirect(url.ToString());
+                    foreach (var item in listInsights)
+                    {
+                        if (item.id == insightsModel.id)
+                        {
+                            item.name = insightsModel.name;
+                            item.workspaceId = insightsModel.workspaceId;
+                            item.reportId = insightsModel.reportId;
+                        }
+                    }
+                    SDConfig.SetInsightsCache(listInsights);
                 }
                 else
                 {
-                    //Khi da co token => get report
-                    report = await graphService.GetReport(settingModel.reportId, userPowerApp.access_token);
-                    if (report.IsNeedRefreshToken)
+                    if (listInsights == null)
                     {
-                        //Token het han can refresh
-                        var refreshModel = graphService.RefreshToken(settingModel.tenantId, settingModel.clientId, settingModel.clientSecret, userPowerApp.refresh_token);
-                        if (!refreshModel.IsSuccess)
-                        {
-                            //Lay token khong thanh cong => Login lai
-                            var url = graphService.LoadPopupLoginMicrosoft(settingModel.tenantId, settingModel.clientId);
-                            return Redirect(url.ToString());
-                        }
-                        else
-                        {
-                            if (refreshModel != null && refreshModel.UserPowerApp != null)
-                            {
-                                //Lay Token luu lai vao DB
-                                var listuser = SDConfig.GetUserPowerAppCache();
-                                var email = Session["Email"]?.ToString();
-                                if (listuser !=null && listuser.Count > 0 && !string.IsNullOrEmpty(email))
-                                {
-                                    foreach (var item in listuser)
-                                    {
-                                        if (item.email.Equals(email))
-                                        {
-                                            item.access_token = refreshModel.UserPowerApp.access_token;
-                                            item.refresh_token = refreshModel.UserPowerApp.refresh_token;
-                                        }
-                                    }
-                                    SDConfig.SetUserPowerAppCache(listuser);
-                                    //Lay lai token moi duoc gan cho user de load report 
-                                    userPowerApp = SDConfig.GetUserPowerAppCache().FirstOrDefault(p => p.email == emailLogin);
-                                    if (userPowerApp != null)
-                                    {
-                                        report = await graphService.GetReport(settingModel.reportId, userPowerApp.access_token);
-                                    }
-                                }
-                            }
-                        }
+                        listInsights = new List<InsightsModel>();
                     }
-                    if (report.IsNeedLoginPopup)
-                    {
-                        //popup login lay token
-                        var url = graphService.LoadPopupLoginMicrosoft(settingModel.tenantId, settingModel.clientId);
-                        return Redirect(url.ToString());
-                    }
+                    insightsModel.id = Guid.NewGuid().ToString();
+                    listInsights.Add(insightsModel);
+                    SDConfig.SetInsightsCache(listInsights);
                 }
+
             }
             catch (Exception ex)
             {
-                report.Message = ex.Message;
+                status = false;
+                message = "error";
             }
-            ViewBag.Report = report;
+            return Json(new { status = status, message = message });
+
+
+        }
+        public ActionResult Configuration()
+        {
+            ViewBag.Message = "Configuration Account Pro lisence for embed Power BI";
+            var configurationAccountModel = SDConfig.GetConfigurationCache();
+            if (configurationAccountModel == null)
+            {
+                configurationAccountModel = SDConfig.CreateDefaultConfiguration();
+                SDConfig.SetConfigurationCache(configurationAccountModel);
+            }
+            ViewBag.userName = configurationAccountModel.userName;
+            ViewBag.password = configurationAccountModel.password;
             return View();
         }
-
-
-        public async Task<ActionResult> LoginCallback()
+        public ActionResult DeleteInsights(string id)
         {
             try
             {
-                var errorCode = Request.Params["error"];
-                var errorDes = Request.Params["error_description"];
-                if (errorCode != null)
+                var listInsights = SDConfig.GetInsightsCache();
+
+                if (listInsights != null && listInsights.Count > 0)
                 {
-                    TempData["LoginErrorMessage"] = (errorDes == null ? "" : errorDes);
-                    return RedirectToAction("ListUser");
+                    listInsights = listInsights.Where(p => p.id != id).ToList();
+                    SDConfig.SetInsightsCache(listInsights);
                 }
-                var code = Request.Params["code"];
-                if (code == null)
-                {
-                    TempData["LoginErrorMessage"] = "You cannot log in using Single Sign-On";
-                    return RedirectToAction("ListUser");
-                }
-                var settingModel = SDConfig.GetSettingCache().FirstOrDefault(p => p.appcode == Constants.AppCode);
-                if (settingModel != null)
-                {
-                    var loginResult = await graphService.GetToken(settingModel.tenantId, code, settingModel.clientId, settingModel.clientSecret);
-                    if (loginResult != null)
-                    {
-                        if (loginResult.IsSuccess)
-                        {
-                            var listuser = SDConfig.GetUserPowerAppCache();
-                            var email = Session["Email"]?.ToString();
-                            if (!string.IsNullOrEmpty(email))
-                            {
-                                foreach (var item in listuser)
-                                {
-                                    if (item.email.Equals(email))
-                                    {
-                                        item.access_token = loginResult.UserPowerApp.access_token;
-                                        item.refresh_token = loginResult.UserPowerApp.refresh_token;
-                                    }
-                                }
-                                SDConfig.SetUserPowerAppCache(listuser);
-                            }
-                        }
-                        else
-                        {
-                            TempData["LoginErrorMessage"] = loginResult.Message;
-                            if (!string.IsNullOrEmpty(loginResult.Redirect))
-                            {
-                                RedirectToAction("ListUser");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    TempData["LoginErrorMessage"] = "Setting is not set up.";
-                    return RedirectToAction("ListUser");
-                }
+
             }
             catch (Exception ex)
             {
             }
-            
-            return RedirectToAction("Embed");
+            return RedirectToAction("InsightsManagement", "Home");
+
+
         }
-
-
-        public ActionResult LoginView(string email)
+        [System.Web.Http.HttpPost]
+        public JsonResult SaveConfiguration(ConfigurationAccountModel configurationAccountModel)
         {
-            Session["Email"] = email;
+            var status = true;
+            var message = "Success";
+            try
+            {
+                if (configurationAccountModel != null)
+                {
+                    SDConfig.SetConfigurationCache(configurationAccountModel);
+                }
+                else
+                {
+                    SDConfig.CreateDefaultConfiguration();
+                }
 
-            return RedirectToAction("Embed");
+            }
+            catch (Exception ex)
+            {
+                status = false;
+                message = "error";
+            }
+            return Json(new { status = status, message = message });
+
+
+        }
+        public async Task<ActionResult> ViewReport(string id,string workspaceId, string reportId)
+        {
+            if (!string.IsNullOrEmpty(m_errorMessage))
+            {
+                return View("Error", BuildErrorModel(m_errorMessage));
+            }
+
+            try
+            {
+                var settingModel = SDConfig.GetInsightsCache().FirstOrDefault(p => p.id == id);
+                if (settingModel != null)
+                {
+                    var workspaceIdV = Guid.Parse(settingModel.workspaceId);
+                    var reportIdV = Guid.Parse(settingModel.reportId);
+                    var embedResult = await EmbedService.GetEmbedParams(workspaceIdV, reportIdV);
+                    return View(embedResult);
+
+                }
+                m_errorMessage = "";
+                return View("Error", BuildErrorModel(m_errorMessage));
+
+            }
+            catch (HttpOperationException exc)
+            {
+                m_errorMessage = string.Format("Status: {0} ({1})\r\nResponse: {2}\r\nRequestId: {3}", exc.Response.StatusCode, (int)exc.Response.StatusCode, exc.Response.Content, exc.Response.Headers["RequestId"].FirstOrDefault());
+                return View("Error", BuildErrorModel(m_errorMessage));
+            }
+            catch (Exception ex)
+            {
+                return View("Error", BuildErrorModel(ex.Message));
+            }
         }
 
+
+
+        private ErrorModel BuildErrorModel(string errorMessage)
+        {
+            return new ErrorModel
+            {
+                ErrorMessage = errorMessage
+            };
+        }
     }
 }

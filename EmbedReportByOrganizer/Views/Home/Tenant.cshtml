@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Tenant";
+}
+@model  EmbedReportByOrganizer.Models.TenantModel
+<h1>Tenant</h1>
+
+
+<div class="row">
+    <div class="mb-3">
+        <label for="fTenantId" class="form-label">Tenant Id</label>
+        <input type="text" class="form-control" id="fTenantId" aria-describedby="fTenantId" value="@Model.tenantId">
+    </div>
+    <div class="mb-3">
+        <label for="fClientId" class="form-label">Client Id</label>
+        <input type="text" class="form-control" id="fClientId" aria-describedby="fClientId" value="@Model.clientId">
+    </div>
+    <div class="mb-3">
+        <label for="fClientSecret" class="form-label">Client secret</label>
+        <input type="password" class="form-control" id="fClientSecret" value="@Model.clientSecret">
+    </div>
+    @*<div class="mb-3">
+        <label for="fWorkspaceId" class="form-label">WorkspaceId</label>
+        <input type="text" class="form-control" id="fWorkspaceId" aria-describedby="fWorkspaceId" value=@workspaceId>
+    </div>
+    <div class="mb-3">
+        <label for="fReportId" class="form-label">ReportId</label>
+        <input type="text" class="form-control" id="fReportId" aria-describedby="fReportId" value=@reportId>
+    </div>*@
+    <div class="button-container col-lg-1 col-md-12">
+        <button class="embed-button" id="fSaveSetting">Save</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $('#fSaveSetting').click(function () {
+                var tenantModel = {
+                    'tenantId': $('#fTenantId').val(),
+                    'clientId': $('#fClientId').val(),
+                    'clientSecret': $('#fClientSecret').val(),
+                    //'workspaceId': $('#fWorkspaceId').val(),
+                    //'reportId': $('#fReportId').val(),
+                };
+                $.ajax({
+                    url: "/Home/SaveTenant",
+                    type: "POST",
+                    data: tenantModel,
+                    success: function (data) {
+                        alert(data.message);
+                    }
+                });
+            });
+        });
+    </script>
+
+}

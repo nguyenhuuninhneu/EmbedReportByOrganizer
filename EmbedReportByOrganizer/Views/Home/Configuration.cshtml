@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Configuration Account Pro lisence for Embed";
+    string userName = ViewBag.userName;
+    string password = ViewBag.password;
+}
+
+<h1>Configuration Account Pro lisence</h1>
+
+
+<div class="row">
+    <div class="mb-3">
+        <label for="fUserName" class="form-label">User Name</label>
+        <input type="text" class="form-control" id="fUserName" aria-describedby="fUserName" value="@userName">
+    </div>
+    <div class="mb-3">
+        <label for="fPassword" class="form-label">Password</label>
+        <input type="password" class="form-control" id="fPassword" aria-describedby="fPassword" value="@password">
+    </div>
+    <div class="button-container col-lg-1 col-md-12">
+        <button class="embed-button" id="fConfiguration">Save</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $('#fConfiguration').click(function () {
+                var settingModel = {
+                    'userName': $('#fUserName').val(),
+                    'password': $('#fPassword').val(),
+                };
+                $.ajax({
+                    url: "/Home/SaveConfiguration",
+                    type: "POST",
+                    data: settingModel,
+                    success: function (data) {
+                        alert(data.message);
+                    }
+                });
+            });
+        });
+    </script>
+
+}
