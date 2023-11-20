@@ -30,7 +30,7 @@
                     'password': $('#fPassword').val(),
                 };
                 $.ajax({
-                    url: "/Home/SaveConfiguration",
+                    url: "@Constants.ProductionEndPoint/Home/SaveConfiguration",
                     type: "POST",
                     data: settingModel,
                     success: function (data) {

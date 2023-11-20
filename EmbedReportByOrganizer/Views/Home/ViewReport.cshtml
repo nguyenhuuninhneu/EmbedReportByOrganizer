@@ -15,17 +15,14 @@
 
 
 <hr />
-<a class="dropdown-item" href="/Home/InsightsManagement">Back to Insights</a>
+<a class="dropdown-item" href="@Constants.ProductionEndPoint/Home/InsightsManagement">Back to Insights</a>
 <div id="embedContainer" style="height: 700px;"></div>
-<style>
-    notification-bar {
-        display: none;
-    }
-</style>
+
 
 @*@Html.Partial("AdditionalLinks")*@
 @section Scripts {
     <script>
+        var isStop = false;
         $(function () {
     // Get a reference to the embedded report HTML element
     const reportContainer = $('#embedContainer')[0];
@@ -67,7 +64,17 @@
 
     // Embed the report and display it within the div container.
             const report = powerbi.embed(reportContainer, config);
+            isStop = true;
 
         });
+        var timerOrganizer = new Timer();
+        timerOrganizer.addEventListener('secondsUpdated', function (e) {
+            if (isStop) {
+                document.querySelectorAll('.position-static').forEach(function (el) {
+                    el.style.display = 'none';
+                });
+            }
+        });
+        timerOrganizer.start();
     </script>
 }

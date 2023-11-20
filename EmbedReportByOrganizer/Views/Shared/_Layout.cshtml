@@ -7,10 +7,17 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="~/Content/style/style.css" rel="stylesheet" />
+    <script src="~/Scripts/Plugins/easyTimer.js"></script>
     <script src="~/Scripts/powerbi.min.js"></script>
 
 </head>
 <body>
+    <style>
+
+        .position-static {
+            display: none !important;
+        }
+    </style>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -25,10 +32,10 @@
                 <ul class="nav navbar-nav">
                     @*<li>@Html.ActionLink("List User", "ListUser", "Home")</li>*@
                     @*<li>@Html.ActionLink("About", "About", "Home")</li>
-                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
-                    <li>@Html.ActionLink("Tenant ", "Tenant", "Home")</li>
-                    <li>@Html.ActionLink("Account Pro", "Configuration", "Home")</li>
-                    <li>@Html.ActionLink("Insights", "InsightsManagement", "Home")</li>
+        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
+                    <li>@Html.ActionLink("Insights Management", "InsightsManagement", "Home")</li>
+                    <li>@Html.ActionLink("Application", "Tenant", "Home")</li>
+                    <li>@Html.ActionLink("Configuration", "Configuration", "Home")</li>
                 </ul>
             </div>
         </div>

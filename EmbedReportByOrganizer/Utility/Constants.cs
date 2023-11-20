@@ -22,5 +22,8 @@ namespace EmbedReportByOrganizer
         public static string ReportID = "a1c4aaab-faf2-4867-be99-479a24f95085";
         public static string WorkspaceID = "dd6a635a-131b-4ab1-8bea-4f206f5f5ecb";
         public static string EmailDefault = "nhn@staod.onmicrosoft.com";
+
+        public static string ProductionEndPoint = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["IsProduction"]) ? System.Configuration.ConfigurationManager.AppSettings["ProductionEndPoint"] : System.Configuration.ConfigurationManager.AppSettings["LocalEndPoint"];
+        public static string ProductionRootPath = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["IsProduction"]) ? System.Configuration.ConfigurationManager.AppSettings["ProductionRootPath"] : System.Configuration.ConfigurationManager.AppSettings["LocalRootPath"];
     }
 }

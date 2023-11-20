@@ -1,13 +1,13 @@
 ﻿@{
-    ViewBag.Title = "Tenant";
+    ViewBag.Title = "Application Configuration";
 }
 @model  EmbedReportByOrganizer.Models.TenantModel
-<h1>Tenant</h1>
+<h1>Application</h1>
 
 
 <div class="row">
     <div class="mb-3">
-        <label for="fTenantId" class="form-label">Tenant Id</label>
+        <label for="fTenantId" class="form-label">Application Id</label>
         <input type="text" class="form-control" id="fTenantId" aria-describedby="fTenantId" value="@Model.tenantId">
     </div>
     <div class="mb-3">
@@ -43,7 +43,7 @@
                     //'reportId': $('#fReportId').val(),
                 };
                 $.ajax({
-                    url: "/Home/SaveTenant",
+                    url: "@Constants.ProductionEndPoint/Home/SaveTenant",
                     type: "POST",
                     data: tenantModel,
                     success: function (data) {

@@ -4,7 +4,7 @@
 @model EmbedReportByOrganizer.Models.InsightsModel
 
 <hr />
-<a class="dropdown-item" href="/Home/InsightsManagement">Back to Insights</a>
+<a class="dropdown-item" href="@Constants.ProductionEndPoint/Home/InsightsManagement">Back to Insights</a>
 
 <h1>Insights Detail</h1>
 
@@ -39,12 +39,12 @@
                     'reportId': $('#fReportID').val(),
                 };
                 $.ajax({
-                    url: "/Home/SaveInsights",
+                    url: "@Constants.ProductionEndPoint/Home/SaveInsights",
                     type: "POST",
                     data: insightModel,
                     success: function (data) {
                         alert(data.message);
-                        window.location.href = 'https://localhost:44379/Home/InsightsManagement';
+                        window.location.href = '@Constants.ProductionEndPoint/Home/InsightsManagement';
                     }
                 });
             });

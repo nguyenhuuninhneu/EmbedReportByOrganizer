@@ -6,7 +6,7 @@
 }
 @model List<EmbedReportByOrganizer.Models.InsightsModel>
 
-<a class="dropdown-item" href="/Home/Insights">Add new</a>
+<a class="dropdown-item" href="@Constants.ProductionEndPoint/Home/Insights">Add new</a>
 <table class="table">
     <thead>
         <tr>
@@ -30,7 +30,7 @@
                     <th scope="row">@item.name</th>
                     <th scope="row">@item.workspaceId</th>
                     <th scope="row">@item.reportId</th>
-                    <td><a class="dropdown-item" href="/Home/Insights?id=@item.id&workspaceId=@item.workspaceId&reportId=@item.reportId">Update</a> / <a class="dropdown-item" href="/Home/ViewReport?id=@item.id&workspaceId=@item.workspaceId&reportId=@item.reportId">View Report</a> / <a class="dropdown-item" href="/Home/DeleteInsights?id=@item.id">Delete</a></td>
+                    <td><a class="dropdown-item" href="@Constants.ProductionEndPoint/Home/Insights?id=@item.id&workspaceId=@item.workspaceId&reportId=@item.reportId">Update</a> / <a class="dropdown-item" href="@Constants.ProductionEndPoint/Home/ViewReport?id=@item.id&workspaceId=@item.workspaceId&reportId=@item.reportId">View Report</a> / <a class="dropdown-item" href="@Constants.ProductionEndPoint/Home/DeleteInsights?id=@item.id">Delete</a></td>
                 </tr>
             }
         }
