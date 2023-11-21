@@ -184,3 +184,5 @@ D:\PowerBI Project\ProjectCode\C#\EmbedReportByOrganizerGit\EmbedReportByOrganiz
 D:\PowerBI Project\ProjectCode\C#\EmbedReportByOrganizerGit\EmbedReportByOrganizer\obj\Debug\EmbedReportByOrganizer.dll
 D:\PowerBI Project\ProjectCode\C#\EmbedReportByOrganizerGit\EmbedReportByOrganizer\obj\Debug\EmbedReportByOrganizer.pdb
 D:\PowerBI Project\ProjectCode\C#\EmbedReportByOrganizerGit\EmbedReportByOrganizer\obj\Debug\EmbedReportByOrganizer.csproj.AssemblyReference.cache
+D:\PowerBI Project\ProjectCode\C#\EmbedReportByOrganizerGit\EmbedReportByOrganizer\bin\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+D:\PowerBI Project\ProjectCode\C#\EmbedReportByOrganizerGit\EmbedReportByOrganizer\bin\Microsoft.IdentityModel.Clients.ActiveDirectory.xml

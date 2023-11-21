@@ -1,0 +1,25 @@
+﻿
+@model EmbedReportByOrganizer.Models.EmbedConfig
+
+<div id="reportContainer"></div>
+
+<script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
+<script>
+    var embedConfig = @Html.Raw(Json.Encode(Model));
+
+    var config = {
+        type: 'report',
+        tokenType: models.TokenType.Embed,
+        accessToken: embedConfig.EmbedToken.token,
+        embedUrl: embedConfig.EmbedUrl,
+        id: embedConfig.ReportId,
+        permissions: models.Permissions.View,
+        settings: {
+            filterPaneEnabled: false,
+            navContentPaneEnabled: true
+        }
+    };
+
+    var reportContainer = document.getElementById('reportContainer');
+    var report = powerbi.embed(reportContainer, config);
+</script>

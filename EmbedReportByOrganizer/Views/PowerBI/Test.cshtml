@@ -1,0 +1,96 @@
+﻿@*@{
+    ViewBag.Title = "Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+@model EmbedReportByOrganizer.Models.EmbedConfig
+
+<script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
+<div id="embedContainer" style="height: 700px;"></div>
+
+
+@*@Html.Partial("AdditionalLinks")*@
+@*@section Scripts {
+    <script>
+        $(function () {
+
+        });
+         var embedConfig = @Html.Raw(Json.Encode(Model));
+    // Get a reference to the embedded report HTML element
+    const reportContainer = $('#embedContainer')[0];
+
+    // Read embed application token from Model
+            const accessToken = embedConfig.EmbedToken.Token;
+
+    // You can embed different reports as per your need by changing the index
+    // Read embed URL from Model
+            const embedUrl = embedConfig.EmbedUrl;
+
+    // Read report Id from Model
+            const embedReportId = embedConfig.ReportId;
+
+    // Use the token expiry to regenerate Embed token for seamless end user experience
+    // Refer https://aka.ms/RefreshEmbedToken
+    //const tokenExpiry = "Model.EmbedToken.Expiration";
+
+    // Get models. models contains enums that can be used.
+    const models = window['powerbi-client'].models;
+    // Embed configuration used to describe the what and how to embed.
+    // This object is used when calling powerbi.embed.
+    // This also includes settings and options such as filters.
+    // You can find more information at https://github.com/Microsoft/PowerBI-JavaScript/wiki/Embed-Configuration-Details.
+            debugger;
+    const config = {
+        type: 'report',
+        tokenType: models.TokenType.Embed,
+        accessToken: accessToken,
+        embedUrl: embedUrl,
+        id: embedReportId,
+        permissions: models.Permissions.All,
+        settings: {
+            // Enable this setting to remove gray shoulders from embedded report
+            // background: models.BackgroundType.Transparent,
+            filterPaneEnabled: true,
+            navContentPaneEnabled: true
+        }
+    };
+
+    // Embed the report and display it within the div container.
+            const report = powerbi.embed(reportContainer, config);
+
+    </script>
+}*@
+
+<script>
+        var embedConfig = @Html.Raw(Json.Encode(Model));
+        debugger;
+    //    var config = {
+    //        type: 'report',
+    //        tokenType: "Embed",
+    //        accessToken: embedConfig.EmbedToken.Token,
+    //        embedUrl: embedConfig.EmbedUrl,
+    //        id: embedConfig.ReportId,
+    //        permissions: "0",
+    //        settings: {
+    //            filterPaneEnabled: false,
+    //            navContentPaneEnabled: true
+    //        }
+    //};
+    const models = window['powerbi-client'].models;
+    const config = {
+        type: 'report',
+        tokenType: models.TokenType.Embed,
+        accessToken: embedConfig.EmbedToken.Token,
+        embedUrl: embedConfig.EmbedUrl,
+        id: embedConfig.ReportId,
+        //permissions: models.Permissions.All,
+        settings: {
+            // Enable this setting to remove gray shoulders from embedded report
+            // background: models.BackgroundType.Transparent,
+            filterPaneEnabled: true,
+            navContentPaneEnabled: true
+        }
+    };
+
+    var reportContainer = document.getElementById('embedContainer');
+        var report = powerbi.embed(reportContainer, config);
+    </script>
